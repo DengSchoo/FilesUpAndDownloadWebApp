@@ -19,11 +19,11 @@ public class UserFile {
     private String newFileName;
     private String ext;
     private String path;
+    private String type;
     private String size;
-    private String  type;
     private String isImg;
     private Integer downCounts;
     private Date uploadTime;
-    private String userId; // 用户外键
+    private Integer userId; // 用户外键
 
 }

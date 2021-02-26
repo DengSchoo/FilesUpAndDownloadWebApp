@@ -3,8 +3,26 @@
 <mapper namespace="com.deng.files.dao.UserFileDao">
 <!--查询当前用户的文件信息-->
     <select id="findByUserId" resultType="UserFile" parameterType="Integer">
-        select  * from t_files
+        select  id, oldFileName, newFileName,
+                ext, path, type, size, isImg,
+                downCounts, uploadTime, userId from t_files
         where userId = #{userId}
     </select>
+    <select id="findById" resultType="UserFile" parameterType="Integer">
+        select * from t_files where id = #{id};
+    </select>
+    <insert id="save" useGeneratedKeys="true" keyProperty="id" parameterType="UserFile">
+        insert into t_files
+        values(#{id}, #{oldFileName}, #{newFileName},
+               #{ext}, #{path}, #{type}, #{size}, #{isImg},
+               #{downCounts}, #{uploadTime}, #{userId})
+    </insert>
+    <update id="update" parameterType="UserFile">
+        update t_files set downCounts = #{downCounts}
+        where id = #{id}
+    </update>
+    <delete id="delete" parameterType="Integer">
+        delete  from t_files where id = #{id}
+    </delete>
 
 </mapper>

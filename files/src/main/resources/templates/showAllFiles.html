@@ -3,6 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <title>用户文件列表界面</title>
+
+    <script th:src="@{/js/jquery-s.js}"></script>
+    <script>
+        $(function() {
+            setInterval(function(){
+                $.get("[[@{/file/findAllJSON} ]]", function (res) {
+                    $.each(res, function (index, item) {
+                        $("#"+item.id).text(item.downCounts);
+                    })
+                })
+            },3000)
+        })
+    </script>
 </head>
 <body>
     <h1>欢迎：<span th:if="${session.user !=null}" th:text="${session.user.username}"></span></h1>
@@ -14,8 +27,8 @@
             <th>New Name</th>
             <th>文件后缀</th>
             <th>存储路径</th>
-            <th>文件大小</th>
             <th>类型</th>
+            <th>文件大小</th>
             <th>是否是图片</th>
             <th>下载次数</th>
             <th>上传时间</th>
@@ -27,15 +40,18 @@
             <td><span th:text="${file.newFileName}"/></td>
             <td><span th:text="${file.ext}"/></td>
             <td><span th:text="${file.path}"/></td>
-            <td><span th:text="${file.size}"/></td>
             <td><span th:text="${file.type}"/></td>
-            <td><span th:text="${file.isImg}"/></td>
-            <td><span th:text="${file.downCounts}"/></td>
+            <td><span th:text="${file.size}"/></td>
+            <td><span th:if="${file.isImg} != '是'" th:text="${file.isImg}"/>
+                <img th:if="${file.isImg} == '是'" style="width:100px;height: 40px" th:src="@{/} + '/' + ${file.path} + '/' + ${file.newFileName}" alt="">
+
+            </td>
+            <td th:id="${file.id}"><span th:text="${file.downCounts}"/></td>
             <td><span th:text="${file.uploadTime}"/></td>
             <td>
-                <a href="">下载</a>
-                <a href="">在线打开</a>
-                <a href="">删除</a>
+                <a th:href="@{/file/download(id=${file.id})}" >下载</a>
+                <a th:href="@{/file/download(id=${file.id}, openWay='inline')}">在线打开</a>
+                <a th:href="@{/file/delete(id=${file.id})}">删除</a>
             </td>
         </tr>
     </table>
@@ -43,7 +59,7 @@
 <h3>
     上传文件:
 </h3>
-    <form action="">
+    <form th:action="@{/file/upload}" method="post" enctype="multipart/form-data">
         <input type="file" name="file">
         <input type="submit" value="上传文件">
 
